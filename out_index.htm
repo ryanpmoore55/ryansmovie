@@ -385,6 +385,7 @@ html,body{
   align-items:center;
   gap: 12px;
   margin-top: 10px;
+  width: 100%;
 }
 .player-bar .demo-play-btn{
   margin-top:0;
@@ -554,7 +555,7 @@ html,body{
 <div id="loader">
   <canvas id="loaderCanvas"></canvas>
   <div class="loader-topline">NO VGA INPUT DETECTED</div>
-  <div class="loader-hint">click or press any key to connect</div>
+  <div class="loader-hint" id="loaderHint">loading&hellip;</div>
 </div>
 
 <div id="site">
@@ -941,7 +942,23 @@ function tick(){
 logoImg.onload = () => { buildTintedLogos(); tick(); };
 if (logoImg.complete && logoImg.naturalWidth){ buildTintedLogos(); tick(); }
 
+let siteReady = false;
+const loaderHint = document.getElementById('loaderHint');
+
+function markSiteReady(){
+  if (siteReady) return;
+  siteReady = true;
+  loaderHint.textContent = 'click or press any key to connect';
+}
+
+if (document.readyState === 'complete'){
+  markSiteReady();
+} else {
+  window.addEventListener('load', markSiteReady);
+}
+
 function enterSite(){
+  if (!siteReady) return;
   document.getElementById('loader').classList.add('hide');
   document.getElementById('site').classList.add('show');
   cancelAnimationFrame(rafId);
